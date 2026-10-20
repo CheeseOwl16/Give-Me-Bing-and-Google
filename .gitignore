@@ -1,0 +1,27 @@
+# Generated local outputs, diagnostics and machine-specific settings
+/.local/
+/.gradle/
+**/build/
+/local.properties
+/.idea/
+*.iml
+*.apk
+*.aab
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+*.pfx
+*.p8
+*.asc
+keystore.properties
+signing.properties
+credentials.properties
+.env
+.env.*
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

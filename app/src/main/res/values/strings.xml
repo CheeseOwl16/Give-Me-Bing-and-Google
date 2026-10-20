@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Give Me Bing and Google!</string>
+    <string name="module_description">Choose Google or Bing for supported Xiaomi Search web queries; use the system default browser independently. Requires modern libxposed API 102.</string>
+    <string name="diagnostic_info">Give Me Bing and Google! — 1.0.0-rc1\n现代 libxposed API 102 · 搜索 12.10.0.07203\n\n普通网页搜索可选择 Google 或 Bing；默认浏览器重定向独立启用。关闭接管后由原生引擎决定。\n不改变原生勾选，不接管本地搜索、AI/OneSearch、网址直达或未知用途。\n不保存搜索内容或 URL，无网络权限。\n</string>
+    <string name="engine_switch">搜索引擎接管</string>
+    <string name="bing_label">Bing（建议）</string>
+    <string name="google_label">Google</string>
+    <string name="browser_switch">普通网页使用系统默认浏览器</string>
+    <string name="saved">设置已提交。后续调用重新读取；升级后请手动重启搜索进程。</string>
+    <string name="save_failed">未确认设置已落盘，请重新打开页面核对。</string>
+</resources>
