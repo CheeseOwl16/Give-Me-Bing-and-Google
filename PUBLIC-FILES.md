@@ -1,10 +1,11 @@
 # 拟提交公开文件清单
 
-共 81 个文件，包含此清单和 SHA256 清单。自有源码采用 Apache-2.0，第三方许可单独保留；当前没有 Git 索引或远端。
+共 82 个文件，包含此清单和 SHA256 清单。自有源码采用 Apache-2.0，第三方许可单独保留；公开范围以本清单为准。
 
 `.local/` 为本地构建、阶段快照、工具及验证记录，不属于源码提交集合；不得压缩/拖拽整个目录上传。公开集合不含 local.properties、APK、设备日志、研究输入、签名材料或缓存。CI 从源码构建 Debug Artifact，不把产物回写分支。
 
 ```text
+.gitattributes
 .github/workflows/android-debug.yml
 .gitignore
 ACKNOWLEDGEMENTS.md
@@ -89,3 +90,18 @@ vendor/libxposed-api-102.0.0.jar
 ```
 
 PUBLIC-FILES.sha256 覆盖本清单内除 SHA 文件自身的所有内容。两份 Jar 是已核验许可的 Wrapper/API 编译输入。修改文件后需重新核对并更新清单；preflight 将拒绝未匹配文件或摘要。
+
+## 跨平台摘要规则
+
+`.gitattributes` 规定文本以 LF 存入 Git 并检出；Jar 等二进制禁止换行转换。SHA256 清单覆盖 81 项，不包含清单自身。
+
+修改公开文件后，先核对并暂存确切的公开集合，再执行：
+
+```sh
+python scripts/preflight.py --write-manifest
+python scripts/preflight.py
+```
+
+生成器对实际 Git 索引 Blob 求 SHA-256，并要求它与工作区的 LF 文本内容一致；发现未暂存编辑会停止。最后暂存更新后的 `PUBLIC-FILES.sha256`。不要将未审查文件加入索引。
+
+普通校验仅将文本 CRLF 规范为 LF 后计算摘要，二进制保持原字节；在 Ubuntu 的 LF 检出中，摘要即实际文件字节摘要。正文、空格、BOM 或二进制的其他变化仍会使校验失败。不能通过重新生成清单代替审阅改动。

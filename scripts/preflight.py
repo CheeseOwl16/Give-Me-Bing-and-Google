@@ -2,10 +2,12 @@
 # Copyright 2026 Cheese owl
 """Public source checks before tests/APK assembly. Standard library only; no SDK or agent."""
 from pathlib import Path
+import argparse
 import hashlib
 import json
 import re
 import sys
+import subprocess
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,7 +18,41 @@ SHA = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
 def check(name, value):
     CHECKS.append({'check': name, 'passed': bool(value)})
 
+def public_bytes(path):
+    # The only admitted public binary inputs are the two pinned Jar files.
+    # Text hashes represent Git's LF blobs, not Windows checkout line endings.
+    data = path.read_bytes()
+    return data if path.suffix == '.jar' else data.replace(b'\r\n', b'\n')
+
+
+def public_files():
+    return sorted(p for p in ROOT.rglob('*') if p.is_file() and
+                  not any(v in {'.local', '.git'} for v in p.relative_to(ROOT).parts))
+
+
+def write_manifest():
+    # No network/config changes: use actual staged blobs; reject unstaged edits.
+    def git(*args):
+        return subprocess.check_output(['git', '-C', str(ROOT), *args])
+    files = public_files()
+    names = {p.relative_to(ROOT).as_posix() for p in files}
+    indexed = set(git('ls-files', '-z').decode('utf-8').rstrip('\0').split('\0'))
+    if indexed != names:
+        raise SystemExit('Stage the exact reviewed public file set before generating hashes')
+    lines = []
+    for name in sorted(names - {'PUBLIC-FILES.sha256'}):
+        path = ROOT / name
+        blob = git('show', ':' + name)
+        if blob != public_bytes(path):
+            raise SystemExit('Staged blob differs from canonical working content: ' + name)
+        lines.append(hashlib.sha256(blob).hexdigest() + '  ' + name + '\n')
+    (ROOT / 'PUBLIC-FILES.sha256').write_text(''.join(lines), encoding='utf-8', newline='\n')
+    print('Manifest generated from ' + str(len(lines)) + ' exact staged Git blobs.')
+
+
 def main():
+    check('LF text and binary attributes present', (ROOT / '.gitattributes').is_file() and
+          all(v in TEXT(ROOT / '.gitattributes').splitlines() for v in ['* text eol=lf', '*.jar -text', '*.apk -text']))
     license_hash = 'cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30'
     check('Official complete Apache-2.0 license', SHA(ROOT / 'LICENSE') == license_hash)
     notice = TEXT(ROOT / 'NOTICE')
@@ -54,7 +90,7 @@ def main():
     check('CI artifact fixed named files only', '.local/ci-artifact/GMBG-Debug.apk' in workflow and
           'retention-days: 14' in workflow and 'if-no-files-found: error' in workflow and
           not any(p in workflow.split('          path: |', 1)[1].split('          include-hidden-files:', 1)[0] for p in ['*', '.log', 'keystore', 'local.properties']))
-    files = sorted(p for p in ROOT.rglob('*') if p.is_file() and not any(v in {'.local', '.git'} for v in p.relative_to(ROOT).parts))
+    files = public_files()
     forbidden = {'.apk', '.aab', '.aar', '.dex', '.odex', '.vdex', '.so', '.class', '.jks', '.keystore', '.pem', '.key', '.p12', '.pfx', '.p8', '.asc', '.log'}
     check('No private/generated candidate files', all(p.suffix.lower() not in forbidden and p.name not in {'local.properties', '.env', 'keystore.properties', 'signing.properties', 'credentials.properties'} and not p.name.startswith('.env.') and not any(v in {'build', '.gradle', '__pycache__'} for v in p.relative_to(ROOT).parts) for p in files))
     check('Only approved Jar inputs', {p.relative_to(ROOT).as_posix() for p in files if p.suffix == '.jar'} == {'vendor/libxposed-api-102.0.0.jar', 'gradle/wrapper/gradle-wrapper.jar'})
@@ -66,11 +102,13 @@ def main():
         expected[name] = digest
     names = {p.relative_to(ROOT).as_posix() for p in files} - {'PUBLIC-FILES.sha256'}
     check('Reviewed public file set complete', set(expected) == names)
-    check('Reviewed public file hashes match', all((ROOT / n).is_file() and SHA(ROOT / n) == h for n, h in expected.items()))
+    mismatches = [n for n, h in expected.items() if not (ROOT / n).is_file() or
+                  hashlib.sha256(public_bytes(ROOT / n)).hexdigest() != h]
+    check('Reviewed public file hashes match', not mismatches)
     ignore = TEXT(ROOT / '.gitignore')
     check('Private outputs and signing material ignored', all(v in ignore for v in ['/.local/', '/.gradle/', '**/build/', '/local.properties', '*.keystore', '*.jks', '*.p12', '*.pem', '*.key']))
     result = {'status': 'LOCAL_PASS' if all(c['passed'] for c in CHECKS) else 'LOCAL_FAIL',
-              'passed': sum(c['passed'] for c in CHECKS), 'failed': [c['check'] for c in CHECKS if not c['passed']], 'checks': CHECKS}
+              'passed': sum(c['passed'] for c in CHECKS), 'failed': [c['check'] for c in CHECKS if not c['passed']], 'checks': CHECKS, 'hash_mismatches': mismatches}
     out = ROOT / '.local'
     out.mkdir(exist_ok=True)
     (out / 'preflight.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
@@ -78,4 +116,11 @@ def main():
     return 0 if result['status'] == 'LOCAL_PASS' else 1
 
 if __name__ == '__main__':
-    sys.exit(main())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--write-manifest', action='store_true',
+                        help='Generate hashes from the exact staged LF Git blobs; stage edits first')
+    args = parser.parse_args()
+    if args.write_manifest:
+        write_manifest()
+    else:
+        sys.exit(main())

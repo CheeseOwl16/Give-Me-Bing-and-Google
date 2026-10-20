@@ -1,0 +1,18 @@
+# Text blobs and clean checkouts use LF on all platforms.
+* text eol=lf
+
+# Binary data must never undergo newline conversion.
+*.jar -text
+*.apk -text
+*.aab -text
+*.aar -text
+*.dex -text
+*.so -text
+*.zip -text
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.webp -text
+*.gif -text
+*.ico -text
+*.pdf -text
