@@ -9,8 +9,8 @@ android {
         applicationId = "dev.cheeseowl.gmbg"
         minSdk = 28
         targetSdk = 35
-        versionCode = 40005
-        versionName = "1.0.0-rc1"
+        versionCode = 40006
+        versionName = "1.1.0-rc1"
     }
     buildTypes {
         debug { isMinifyEnabled = false }

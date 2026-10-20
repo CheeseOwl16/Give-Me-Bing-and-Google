@@ -49,7 +49,7 @@ def main():
         (private / (name + '.txt')).write_text(outputs[name], encoding='utf-8')
         check(name + ' tool succeeds', run.returncode == 0)
     bad = outputs['badging']
-    check('APK applicationId/version', f"name='{APP}'" in bad and "versionCode='40005'" in bad and "versionName='1.0.0-rc1'" in bad)
+    check('APK applicationId/version', f"name='{APP}'" in bad and "versionCode='40006'" in bad and "versionName='1.1.0-rc1'" in bad)
     check('APK display name', 'Give Me Bing and Google!' in bad)
     check('APK no requested permissions', not re.search(r'^uses-permission', bad, re.M))
     check('Debuggable candidate', 'application-debuggable' in bad)
@@ -64,7 +64,7 @@ def main():
     check('Description and label resources', application.get(ns + 'label') == '@string/app_name' and application.get(ns + 'description') == '@string/module_description')
     source = ROOT / 'app/src/main/java/dev/cheeseowl/gmbg'
     texts = {p.name: TEXT(p) for p in source.glob('*.java')}
-    check('Migrated Java sources', len(texts) == 34 and all(t.startswith('package ' + APP + ';') for t in texts.values()))
+    check('Migrated Java sources', len(texts) == 35 and all(t.startswith('package ' + APP + ';') for t in texts.values()))
     check('No old self namespace in sources', all('dev.qsbfix.diagnostics' not in t for t in texts.values()))
     check('Provider class agrees', f'"{APP}.flags"' in texts['FeatureProvider.java'])
     gradle = TEXT(ROOT / 'app/build.gradle.kts')
@@ -97,7 +97,7 @@ def main():
         check('No bundled research/source/libraries', not any(n.startswith(('assets/', 'lib/')) or n.endswith(('.apk', '.jar', '.aar', '.java', '.kt', '.jks', '.keystore')) for n in names))
     suites = [ET.parse(p).getroot() for p in (BUILD / 'test-results/testDebugUnitTest').glob('TEST-*.xml')]
     total = sum(int(s.get('tests', '0')) for s in suites)
-    check('137 JVM tests without failures/errors/skips', total == 137 and all(all(s.get(k) == '0' for k in ['failures', 'errors', 'skipped']) for s in suites))
+    check('149 JVM tests without failures/errors/skips', total == 149 and all(all(s.get(k) == '0' for k in ['failures', 'errors', 'skipped']) for s in suites))
     lint = TEXT(BUILD / 'reports/lint-results-debug.txt')
     check('Lint zero errors', bool(re.search(r'0 errors, \d+ warnings', lint)))
     files = public_files()
@@ -128,7 +128,7 @@ def main():
               'apk_sha256': SHA(apk), 'certificate_sha256': cert[1] if cert else None,
               'public_file_count': len(files), 'sensitive_file_candidates': sensitive, 'git_index': git_index,
               'verification_scope': 'Reads built artifacts and JUnit/Lint reports; does not execute Gradle',
-              'runtime': 'NOT_RUN: renamed candidate', 'checks': checks}
+              'runtime': 'NOT_RUN: newly built APK; device verification is manual', 'checks': checks}
     (OUT / 'verification.json').write_text(json.dumps(result, indent=2), encoding='utf-8')
     print(json.dumps({k: v for k, v in result.items() if k != 'checks'}, indent=2))
     return 0 if result['status'] == 'LOCAL_PASS' else 1

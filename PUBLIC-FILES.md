@@ -1,6 +1,6 @@
 # 拟提交公开文件清单
 
-共 82 个文件，包含此清单和 SHA256 清单。自有源码采用 Apache-2.0，第三方许可单独保留；公开范围以本清单为准。
+共 84 个文件，包含此清单和 SHA256 清单。自有源码采用 Apache-2.0，第三方许可单独保留；公开范围以本清单为准。
 
 `.local/` 为本地构建、阶段快照、工具及验证记录，不属于源码提交集合；不得压缩/拖拽整个目录上传。公开集合不含 local.properties、APK、设备日志、研究输入、签名材料或缓存。CI 从源码构建 Debug Artifact，不把产物回写分支。
 
@@ -38,6 +38,7 @@ app/src/main/java/dev/cheeseowl/gmbg/HistoryDomain.java
 app/src/main/java/dev/cheeseowl/gmbg/HistoryHost.java
 app/src/main/java/dev/cheeseowl/gmbg/HistoryScope.java
 app/src/main/java/dev/cheeseowl/gmbg/InfoActivity.java
+app/src/main/java/dev/cheeseowl/gmbg/LauncherIconController.java
 app/src/main/java/dev/cheeseowl/gmbg/NativeSuggestionDomain.java
 app/src/main/java/dev/cheeseowl/gmbg/NativeSuggestionHost.java
 app/src/main/java/dev/cheeseowl/gmbg/NativeSuggestionScope.java
@@ -63,6 +64,7 @@ app/src/main/resources/META-INF/xposed/scope.list
 app/src/test/java/dev/cheeseowl/gmbg/BrowserTest.java
 app/src/test/java/dev/cheeseowl/gmbg/DiagnosticCoreTest.java
 app/src/test/java/dev/cheeseowl/gmbg/HistoryTest.java
+app/src/test/java/dev/cheeseowl/gmbg/LauncherIconTest.java
 app/src/test/java/dev/cheeseowl/gmbg/NativeSuggestionTest.java
 app/src/test/java/dev/cheeseowl/gmbg/SuggestionDiagnosticsTest.java
 app/src/test/java/dev/cheeseowl/gmbg/TakeoverTest.java
@@ -93,7 +95,7 @@ PUBLIC-FILES.sha256 覆盖本清单内除 SHA 文件自身的所有内容。两�
 
 ## 跨平台摘要规则
 
-`.gitattributes` 规定文本以 LF 存入 Git 并检出；Jar 等二进制禁止换行转换。SHA256 清单覆盖 81 项，不包含清单自身。
+`.gitattributes` 规定文本以 LF 存入 Git 并检出；Jar 等二进制禁止换行转换。SHA256 清单覆盖 83 项，不包含清单自身。
 
 修改公开文件后，先核对并暂存确切的公开集合，再执行：
 
