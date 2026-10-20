@@ -6,7 +6,7 @@ GMBG (Give Me Bing and Google!) is an LSPosed module for Xiaomi's built-in Searc
 
 The idea behind this project is simple: I wanted to choose my own search engine and decide which browser opens my web searches.
 
-简体中文 · Build Instructions · Acknowledgements
+[简体中文](README.md) · [Build Instructions](docs/BUILDING.md) · [Acknowledgements](ACKNOWLEDGEMENTS.md)
 
 ## Features
 
@@ -122,9 +122,9 @@ Or use the Gradle Wrapper directly:
 ./gradlew :app:assembleDebug
 ```
 
-See BUILDING.md for detailed instructions.
+See [BUILDING.md](docs/BUILDING.md) for detailed instructions.
 
-The GitHub Actions workflow is located at `.github/workflows/android-debug.yml`. It runs automated checks and builds Debug APKs without committing generated binaries to the source branch.
+The GitHub Actions workflow is located at [.github/workflows/android-debug.yml](.github/workflows/android-debug.yml). It runs automated checks and builds Debug APKs without committing generated binaries to the source branch.
 
 ## Acknowledgements
 
@@ -138,12 +138,12 @@ The development of this project was informed by ideas from the following open-so
 
 Thanks to the authors and contributors of these projects.
 
-For details about references and third-party licenses, see ACKNOWLEDGEMENTS.md.
+For details about references and third-party licenses, see [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md).
 
 ## License
 
 Copyright 2026 Cheese owl
 
-Project-owned source code and documentation are licensed under the Apache License 2.0. Third-party materials remain subject to their respective licenses. See NOTICE and LICENSES.
+Project-owned source code and documentation are licensed under the [Apache License 2.0](LICENSE). Third-party materials remain subject to their respective licenses. See [NOTICE](NOTICE) and [LICENSES](LICENSES/).
 
 This project is not affiliated with Xiaomi, Google, Microsoft, Chrome, or their respective owners.

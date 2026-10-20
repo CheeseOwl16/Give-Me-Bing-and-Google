@@ -6,7 +6,7 @@ GMBG（Give Me Bing and Google!）是一个针对小米系统「搜索」组件�
 
 这个项目的起因很简单：我希望自己决定使用哪个搜索引擎，以及用什么浏览器打开搜索结果。
 
-English · 构建说明 · 第三方致谢
+[English](README_EN.md) · [构建说明](docs/BUILDING.md) · [第三方致谢](ACKNOWLEDGEMENTS.md)
 
 ## 功能
 
@@ -122,9 +122,9 @@ Windows 下可执行：
 ./gradlew :app:assembleDebug
 ```
 
-详细构建方式请参阅 BUILDING.md。
+详细构建方式请参阅 [BUILDING.md](docs/BUILDING.md)。
 
-GitHub Actions 工作流位于 `.github/workflows/android-debug.yml`，用于自动测试和生成 Debug APK，不会将生成的 APK 提交到源码分支。
+GitHub Actions 工作流位于 [.github/workflows/android-debug.yml](.github/workflows/android-debug.yml)，用于自动测试和生成 Debug APK，不会将生成的 APK 提交到源码分支。
 
 ## 致谢
 
@@ -138,12 +138,12 @@ GitHub Actions 工作流位于 `.github/workflows/android-debug.yml`，用于自
 
 感谢这些项目的作者和贡献者。
 
-具体来源及第三方许可证信息请参阅 ACKNOWLEDGEMENTS.md。
+具体来源及第三方许可证信息请参阅 [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md)。
 
 ## 开源许可证
 
 Copyright 2026 Cheese owl
 
-项目自有源码及文档采用 Apache License 2.0 开源。第三方材料仍遵循各自许可证，详见 NOTICE 和 LICENSES。
+项目自有源码及文档采用 [Apache License 2.0](LICENSE) 开源。第三方材料仍遵循各自许可证，详见 [NOTICE](NOTICE) 和 [LICENSES](LICENSES/)。
 
 本项目与 Xiaomi、Google、Microsoft、Chrome 等相关厂商没有官方关联。
